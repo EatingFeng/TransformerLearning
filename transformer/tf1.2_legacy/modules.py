@@ -8,6 +8,7 @@ https://www.github.com/kyubyong/transformer
 
 from __future__ import print_function
 import tensorflow as tf
+import logging
 
 def normalize(inputs, 
               epsilon = 1e-8,
@@ -26,12 +27,13 @@ def normalize(inputs,
     Returns:
       A tensor with the same shape and data dtype as `inputs`.
     '''
-    with tf.variable_scope(scope, reuse=reuse):
+    with tf.variable_scope(scope, reuse = reuse):
         inputs_shape = inputs.get_shape()
         params_shape = inputs_shape[-1:]
-    
+        logging.info("inputs is : "+inputs)
         mean, variance = tf.nn.moments(inputs, [-1], keep_dims=True)
-        beta= tf.Variable(tf.zeros(params_shape))
+        logging.warning("mean is : "+mean)
+        beta = tf.Variable(tf.zeros(params_shape))
         gamma = tf.Variable(tf.ones(params_shape))
         normalized = (inputs - mean) / ( (variance + epsilon) ** (.5) )
         outputs = gamma * normalized + beta
